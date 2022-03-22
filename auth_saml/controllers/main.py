@@ -172,6 +172,14 @@ class AuthSAMLController(http.Controller):
         context = state.get("c", {})
         registry = registry_get(dbname)
 
+        # Debug
+        _logger.info("SAML2: state:", state)
+        _logger.info("SAML2: provider:", provider)
+        _logger.info("SAML2: dbname:", dbname)
+        _logger.info("SAML2: context:", context)
+        _logger.info("SAML2: registry:", registry)
+
+            
         with registry.cursor() as cr:
             try:
                 env = api.Environment(cr, SUPERUSER_ID, context)
@@ -195,7 +203,7 @@ class AuthSAMLController(http.Controller):
 
             except odoo.exceptions.AccessDenied:
                 # saml credentials not valid,
-                # user could be on a temporary session
+                # user could be on a temporary session                    
                 _logger.info("SAML2: access denied")
 
                 url = "/web/login?saml_error=expired"
