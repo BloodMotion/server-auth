@@ -175,10 +175,6 @@ class AuthSAMLController(http.Controller):
         with registry.cursor() as cr:
             try:
                 env = api.Environment(cr, SUPERUSER_ID, context)
-                _logger.warn("SAML2: exodebug env.res.users:", env["res.users"])
-                _logger.warn("SAML2: exodebug provider:", provider)
-                _logger.warn("SAML2: exodebug saml_response:", saml_response)
-                _logger.warn("SAML2: exodebug httprequest:", request.httprequest.url_root.rstrip("/"))
                 
                 credentials = (
                     env["res.users"]
@@ -189,12 +185,6 @@ class AuthSAMLController(http.Controller):
                         request.httprequest.url_root.rstrip("/"),
                     )
                 )
-                
-                # Debug
-                _logger.warn("SAML2: exodebug credentials:", credentials)
-                _logger.warn("SAML2: exodebug action:", state.get("a"))
-                _logger.warn("SAML2: exodebug menu:", state.get("m"))
-                
                 action = state.get("a")
                 menu = state.get("m")
                 url = "/"
@@ -202,12 +192,16 @@ class AuthSAMLController(http.Controller):
                     url = "/#action=%s" % action
                 elif menu:
                     url = "/#menu_id=%s" % menu
+                
+                # Debug
+                _logger.warn("SAML2: exodebug url:", url)
+                _logger.warn("SAML2: exodebug credentials:", credentials)
+
                 return login_and_redirect(*credentials, redirect_url=url)
 
             except odoo.exceptions.AccessDenied as e:
                 # saml credentials not valid,
-                # user could be on a temporary session                    
-                _logger.warn("SAML2: exodebug error message:", e)
+                # user could be on a temporary session
                 _logger.info("SAML2: access denied")
 
                 url = "/web/login?saml_error=expired"
