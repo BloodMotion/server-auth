@@ -175,6 +175,11 @@ class AuthSAMLController(http.Controller):
         with registry.cursor() as cr:
             try:
                 env = api.Environment(cr, SUPERUSER_ID, context)
+                _logger.warn("SAML2: exodebug env.res.users:", env["res.users"])
+                _logger.warn("SAML2: exodebug provider:", provider)
+                _logger.warn("SAML2: exodebug saml_response:", saml_response)
+                _logger.warn("SAML2: exodebug httprequest:", request.httprequest.url_root.rstrip("/"))
+                
                 credentials = (
                     env["res.users"]
                     .sudo()
@@ -199,9 +204,10 @@ class AuthSAMLController(http.Controller):
                     url = "/#menu_id=%s" % menu
                 return login_and_redirect(*credentials, redirect_url=url)
 
-            except odoo.exceptions.AccessDenied:
+            except odoo.exceptions.AccessDenied as e:
                 # saml credentials not valid,
                 # user could be on a temporary session                    
+                _logger.warn("SAML2: exodebug error message:", e)
                 _logger.info("SAML2: access denied")
 
                 url = "/web/login?saml_error=expired"
