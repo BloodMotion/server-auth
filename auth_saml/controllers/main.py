@@ -172,14 +172,6 @@ class AuthSAMLController(http.Controller):
         context = state.get("c", {})
         registry = registry_get(dbname)
 
-        # Debug
-        _logger.info("SAML2: state:", state)
-        _logger.info("SAML2: provider:", provider)
-        _logger.info("SAML2: dbname:", dbname)
-        _logger.info("SAML2: context:", context)
-        _logger.info("SAML2: registry:", registry)
-
-            
         with registry.cursor() as cr:
             try:
                 env = api.Environment(cr, SUPERUSER_ID, context)
@@ -192,6 +184,12 @@ class AuthSAMLController(http.Controller):
                         request.httprequest.url_root.rstrip("/"),
                     )
                 )
+                
+                # Debug
+                _logger.info("SAML2: exodebug credentials:", credentials)
+                _logger.info("SAML2: exodebug action:", state.get("a")
+                _logger.info("SAML2: exodebug menu:", state.get("m")
+                
                 action = state.get("a")
                 menu = state.get("m")
                 url = "/"
