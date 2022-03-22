@@ -187,8 +187,8 @@ class AuthSAMLController(http.Controller):
                 
                 # Debug
                 _logger.info("SAML2: exodebug credentials:", credentials)
-                _logger.info("SAML2: exodebug action:", state.get("a")
-                _logger.info("SAML2: exodebug menu:", state.get("m")
+                _logger.info("SAML2: exodebug action:", state.get("a"))
+                _logger.info("SAML2: exodebug menu:", state.get("m"))
                 
                 action = state.get("a")
                 menu = state.get("m")
